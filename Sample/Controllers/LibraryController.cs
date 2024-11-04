@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using SampleModels;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -9,20 +10,21 @@ namespace LibraryManagementSystem.Controllers
     {
         private readonly LibraryManager _libraryManager;
 
-        public LibraryController()
+     
+        public LibraryController(LibraryManager libraryManager)
         {
-            _libraryManager = new LibraryManager();
+            _libraryManager = libraryManager;
         }
 
         [HttpGet]
-        public ActionResult<List<Book>> GetBooks()
+        public ActionResult<List<LibraryModel.Book>> GetBooks()
         {
             var books = _libraryManager.GetAllBooks();
             return Ok(books);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Book> GetBook(int id)
+        public ActionResult<LibraryModel.Book> GetBook(int id)
         {
             var book = _libraryManager.GetBookById(id);
             if (book == null)
@@ -33,7 +35,7 @@ namespace LibraryManagementSystem.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Book> AddBook([FromBody] Book book)
+        public ActionResult<LibraryModel.Book> AddBook([FromBody] LibraryModel.Book book)
         {
             if (book == null)
             {
@@ -44,7 +46,7 @@ namespace LibraryManagementSystem.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Book> UpdateBook(int id, [FromBody] Book updatedBook)
+        public ActionResult<LibraryModel.Book> UpdateBook(int id, [FromBody] LibraryModel.Book updatedBook)
         {
             if (updatedBook == null)
             {

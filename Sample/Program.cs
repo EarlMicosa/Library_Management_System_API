@@ -1,29 +1,56 @@
-using SampleManager.Managers;
-using SampleManager.Services;
+using System.Collections.Generic;
+using System.Linq;
+using SampleModels;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddScoped<IStudentService, StudentManager>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+namespace LibraryManagementSystem
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public class LibraryManager
+    {
+        private List<LibraryModel.Book> books = new List<LibraryModel.Book>();
+        private int nextId = 1;
+
+        public LibraryModel.Book AddBook(LibraryModel.Book book)
+        {
+            if (book == null) throw new ArgumentNullException(nameof(book));
+            book.Id = nextId++;
+            books.Add(book);
+            return book;
+        }
+
+        public List<LibraryModel.Book> GetAllBooks()
+        {
+            return books;
+        }
+
+        public LibraryModel.Book GetBookById(int id)
+        {
+            return books.FirstOrDefault(b => b.Id == id);
+        }
+
+        public LibraryModel.Book UpdateBook(int id, LibraryModel.Book updatedBook)
+        {
+            if (updatedBook == null) throw new ArgumentNullException(nameof(updatedBook));
+            var book = GetBookById(id);
+            if (book != null)
+            {
+                book.Title = updatedBook.Title;
+                book.Author = updatedBook.Author;
+                book.ISBN = updatedBook.ISBN;
+                book.IsAvailable = updatedBook.IsAvailable;
+                return book;
+            }
+            return null;
+        }
+
+        public bool DeleteBook(int id)
+        {
+            var book = GetBookById(id);
+            if (book != null)
+            {
+                books.Remove(book);
+                return true;
+            }
+            return false;
+        }
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
