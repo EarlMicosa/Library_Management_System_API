@@ -1,30 +1,33 @@
 using System.Collections.Generic;
 using System.Linq;
+using SampleModels; // Include the namespace for Book
 
 public class LibraryManager
 {
-    private List<Book> books = new List<Book>();
+    private List<LibraryModel.Book> books = new List<LibraryModel.Book>();
     private int nextId = 1;
 
-    public Book AddBook(Book book)
+    public LibraryModel.Book AddBook(LibraryModel.Book book)
     {
+        if (book == null) throw new ArgumentNullException(nameof(book));
         book.Id = nextId++;
         books.Add(book);
         return book;
     }
 
-    public List<Book> GetAllBooks()
+    public List<LibraryModel.Book> GetAllBooks()
     {
         return books;
     }
 
-    public Book GetBookById(int id)
+    public LibraryModel.Book GetBookById(int id)
     {
         return books.FirstOrDefault(b => b.Id == id);
     }
 
-    public Book UpdateBook(int id, Book updatedBook)
+    public LibraryModel.Book UpdateBook(int id, LibraryModel.Book updatedBook)
     {
+        if (updatedBook == null) throw new ArgumentNullException(nameof(updatedBook));
         var book = GetBookById(id);
         if (book != null)
         {
@@ -32,8 +35,9 @@ public class LibraryManager
             book.Author = updatedBook.Author;
             book.ISBN = updatedBook.ISBN;
             book.IsAvailable = updatedBook.IsAvailable;
+            return book;
         }
-        return book;
+        return null; // Or throw an exception
     }
 
     public bool DeleteBook(int id)
